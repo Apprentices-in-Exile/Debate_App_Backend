@@ -1,6 +1,8 @@
 import json
 import urllib3
 
+import pymysql
+
 import os
 import openai
 
@@ -9,6 +11,15 @@ from botocore.exceptions import ClientError
 
 client = boto3.client('apigatewaymanagementapi', endpoint_url="https://a0ppckpw77.execute-api.us-east-2.amazonaws.com/development")
 
+# Database Configuration Values
+endpoint = 'database-1.co1vivjyehts.us-east-2.rds.amazonaws.com'
+username = 'admin'
+password = 'databasetest'
+database_name = 'rdstest'
+
+# Database Connection
+connection = pymysql.connect(host=endpoint, user=username,
+	password=password, db=database_name)
 
 def get_secret():
 
@@ -67,3 +78,17 @@ def lambda_handler(event, context):
         if "content" in chunk["choices"][0]["delta"]:
             client.post_to_connection(ConnectionId=connectionId, Data=chunk["choices"][0]["delta"]["content"])
     return { "statusCode": 200  }
+
+ 
+
+
+ 
+# def lambda_handler():
+# 	cursor = connection.cursor()
+# 	cursor.execute('SELECT * from Conversation')
+# 	rows = cursor.fetchall()
+ 
+# 	for row in rows:
+# 		print("{0} {1} {2} {3} {4}".format(row[0], row[1], row[2], row[3], row[4]))
+
+# lambda_handler()
