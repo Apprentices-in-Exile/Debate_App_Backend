@@ -2,12 +2,12 @@ from sqlalchemy import String, Integer, Date, Boolean
 from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy import Table
+
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import backref
 
 from session import Base
 
-#  Many to Many Mapping Models
 
 conversation_persona = Table(
     'conversation_persona', Base.metadata,
@@ -22,8 +22,6 @@ conversation_tag = Table(
     Column('tagID', Integer, ForeignKey('tags.id'))
 )
 
-
-#  Conversation Model 
 
 class Conversation(Base):
     __tablename__ = 'conversations'

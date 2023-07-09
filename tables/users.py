@@ -20,8 +20,6 @@ class User(Base):
     persona = relationship("Persona", backref=backref("users"))
     upvote = relationship("Upvote", backref=backref("users"))
 
-
-
     def __init__(self, userName, firstName, lastName, email, createdDate):
         self.userName = userName
         self.firstName = firstName

@@ -1,5 +1,6 @@
-from sqlalchemy import String, Integer, Date, Boolean
-from sqlalchemy import Column, ForeignKey
+from sqlalchemy import String, Integer, Date
+from sqlalchemy import Column
+
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import backref
 
