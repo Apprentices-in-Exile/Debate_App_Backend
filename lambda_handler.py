@@ -2,6 +2,7 @@ import logging
 import pymysql
 import boto3
 import json
+import os
 from typing import Any, Dict, Union
 
 def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Union[int, str]]:
@@ -36,10 +37,11 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Union[int, 
         }
 
     # Your actual RDS MySQL credentials and endpoint
-    db_host = 'your_rds_endpoint'
-    db_user = 'your_username'
-    db_password = 'your_password'
-    db_name = 'your_database_name'
+    db_host = os.environ['DB_HOST']
+    db_user = os.environ['DB_USER']
+    db_password = os.environ['DB_PASSWORD']
+    db_name = os.environ['DB_NAME']
+    
     
     # Connect to the database
     try:
