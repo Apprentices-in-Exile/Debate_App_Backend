@@ -3,7 +3,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from models.conversations import Conversation 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 from models.conversations import Conversation 
 from database_credentials import get_db_url
 from globals import tracer, logger, metrics

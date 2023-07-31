@@ -3,7 +3,6 @@ import json
 import pymysql 
 from requests import Response
 from sqlalchemy import create_engine, Table, MetaData, select
-from sqlalchemy.orm import Session
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from aws_lambda_powertools.utilities import parameters
 from aws_lambda_powertools import Logger, Metrics, Tracer
