@@ -19,7 +19,8 @@ def store_data(body):
         engine = create_engine(db_url)
 
     # Create a new Conversation object
-    conversation = Conversation(body=body.get('body'),
+    conversation = Conversation(s3_bucket=body.get('s3_bucket'),
+                                s3_key=body.get('s3_key'),
                                 title=body.get('title'),
                                 isPublic=body.get('isPublic'),
                                 createdDate=body.get('createdDate'),

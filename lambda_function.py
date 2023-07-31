@@ -4,9 +4,7 @@ import pymysql
 from requests import Response
 from sqlalchemy import create_engine, Table, MetaData, select
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from aws_lambda_powertools.utilities import parameters
-from aws_lambda_powertools import Logger, Metrics, Tracer
-from aws_lambda_powertools.metrics import MetricUnit
+
 from database_credentials import get_db_url
 from globals import tracer, logger, metrics
 from globals import engine
@@ -14,7 +12,7 @@ from globals import engine
 @metrics.log_metrics
 @logger.inject_lambda_context
 @tracer.capture_lambda_handler
-def lambda_handler(event, context):
+def lambda_handler(event: dict, context: LambdaContext):
     global engine
 
     # Parse path and body from the event
