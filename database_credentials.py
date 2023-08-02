@@ -1,12 +1,9 @@
-from globals import tracer
-from aws_lambda_powertools.utilities.parameters import ParameterResolver, SSMProvider
+from aws_lambda_powertools.utilities import parameters
 
+ssm_provider = parameters.SSMProvider()
 
-param_resolver = ParameterResolver()
-
-@tracer.capture_method
 def get_encrypted_parameter(name):
-    return param_resolver.get(name, SSMProvider)
+    return ssm_provider.get(name, decrypt=True)
 
 def get_db_url():
     # Get database credentials from environment variables

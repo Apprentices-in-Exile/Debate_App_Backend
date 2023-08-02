@@ -1,40 +1,34 @@
 import json 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 from models.conversations import Conversation 
-from sqlalchemy import create_engine
-from models.conversations import Conversation 
-from database_credentials import get_db_url
-from globals import tracer, logger, metrics
+from globals import tracer
 from globals import app
 from globals import engine
-
+from session import session as Session
+from session import mysql_engine
 
 @tracer.capture_method
-def retrieve_data(body):
+def retrieve_data(conversation_id):
     # Initialize SQLAlchemy engine if it's not already initialized
     global engine
     if engine is None:
-        db_url = get_db_url()
-        engine = create_engine(db_url)
+        engine = mysql_engine
 
     # Retrieve a Conversation object from the database
     with Session(engine) as session:
-        conversation_id = body.get('id')
         conversation = session.query(Conversation).filter_by(id=conversation_id).first()
 
         if conversation is None:
             return {
                 'statusCode': 404,
-                'body': f'Conversation with ID {conversation_id} not found.'
+                'body': json.dumps({'message': f'Conversation with ID {conversation_id} not found.'})
             }
 
-        return conversation
+        return {"statusCode": 200, "body": json.dumps(conversation.to_dict())}
     
 
-@app.get("/retrieve")
-def handle_retrieve(event, context):
-    body = json.loads(event.get('body', '{}'))
-    # ... Retrieve data from the database ...
 
-    return {"statusCode": 200, "body": json.dumps({"data": data})}
+@app.get("/retrieve/{id}")
+def handler(event, context):
+    conversation_id = int(event['pathParameters']['id'])
+    response = retrieve_data(conversation_id)
+    return response

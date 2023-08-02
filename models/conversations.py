@@ -48,3 +48,6 @@ class Conversation(Base):
         self.createdDate = createdDate
         self.userID = userID
         self.topicID = topicID
+
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

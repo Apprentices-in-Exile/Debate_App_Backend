@@ -1,13 +1,13 @@
 import json 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
+# from aws_lambda_powertools.utilities.validation import validate
+
 from models.conversations import Conversation 
-from sqlalchemy import create_engine
-from models.conversations import Conversation 
-from database_credentials import get_db_url
-from globals import tracer, logger, metrics
+from globals import tracer
 from globals import app
 from globals import engine
+from session import session as Session
+from session import mysql_engine
+# from schemas.conversation import conversation as conversation_schema
 
 
 @tracer.capture_method
@@ -15,8 +15,7 @@ def store_data(body):
     # Initialize SQLAlchemy engine if it's not already initialized
     global engine
     if engine is None:
-        db_url = get_db_url()
-        engine = create_engine(db_url)
+        engine = mysql_engine
 
     # Create a new Conversation object
     conversation = Conversation(s3_bucket=body.get('s3_bucket'),
@@ -32,8 +31,9 @@ def store_data(body):
         session.add(conversation)
         session.commit()
 
+# @validate(inbound_schema=conversation_schema)
 @app.post("/store")
-def handle_store(event, context):
+def handler(event, context):
     body = json.loads(event.get('body', '{}'))
     store_data(body)
     return {"statusCode": 200, "body": "Data stored successfully!"}
