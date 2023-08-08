@@ -13,3 +13,12 @@ session = Session()
 
 
 Base = declarative_base()
+
+from models.conversations import Conversation
+from models.personas import Persona
+from models.tags import Tag
+from models.topics import Topic
+from models.upvotes import Upvote
+from models.users import User
+
+Base.metadata.create_all(mysql_engine)

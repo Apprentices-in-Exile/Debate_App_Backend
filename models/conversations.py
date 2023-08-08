@@ -48,6 +48,10 @@ class Conversation(Base):
         self.createdDate = createdDate
         self.userID = userID
         self.topicID = topicID
+        
 
     def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+            data = {column.name: getattr(self, column.name) for column in self.__table__.columns}
+            if 'createdDate' in data and data['createdDate']:
+                data['createdDate'] = data['createdDate'].isoformat()
+            return data

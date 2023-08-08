@@ -27,3 +27,10 @@ class Persona(Base):
         self.isPublic = isPublic
         self.createdDate = createdDate
         self.userID = userID
+        
+    
+    def to_dict(self):
+            data = {column.name: getattr(self, column.name) for column in self.__table__.columns}
+            if 'createdDate' in data and data['createdDate']:
+                data['createdDate'] = data['createdDate'].isoformat()
+            return data

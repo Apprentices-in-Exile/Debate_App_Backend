@@ -6,7 +6,7 @@ def get_encrypted_parameter(name):
     return ssm_provider.get(name, decrypt=True)
 
 def get_db_url():
-    # Get database credentials from environment variables
+
     DB_HOST: str = get_encrypted_parameter("debate_app_database_host")
     DB_USERNAME: str = get_encrypted_parameter("debate_app_database_username")
     DB_PASSWORD: str = get_encrypted_parameter("debate_app_database_password")
