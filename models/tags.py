@@ -11,3 +11,6 @@ class Tag(Base):
 
     def __init__(self, tagName):
         self.tagName = tagName
+
+    def to_dict(self):
+            return {column.name: getattr(self, column.name) for column in self.__table__.columns}

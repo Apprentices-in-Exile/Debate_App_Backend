@@ -29,7 +29,8 @@ class Conversation(Base):
     __tablename__ = 'conversations'
 
     id = Column(Integer, primary_key=True)
-    body = Column(String(100), index=True)
+    s3_bucket = Column(String(100), index=True)
+    s3_key = Column(String(100), index=True)
     title = Column(String(100), index=True)
     isPublic = Column(Boolean)
     createdDate = Column(Date)
@@ -39,10 +40,18 @@ class Conversation(Base):
     followingPersona = relationship('Persona', secondary=conversation_persona, backref=backref('followers'))
     followingTag = relationship('Tag', secondary=conversation_tag, backref=backref('followers'))
 
-    def __init__(self, body, title, isPublic, createdDate, userID, topicID):
-        self.body = body
+    def __init__(self, s3_bucket, s3_key, title, isPublic, createdDate, userID, topicID):
+        self.s3_bucket = s3_bucket
+        self.s3_key = s3_key
         self.title = title
         self.isPublic = isPublic
         self.createdDate = createdDate
         self.userID = userID
         self.topicID = topicID
+        
+
+    def to_dict(self):
+            data = {column.name: getattr(self, column.name) for column in self.__table__.columns}
+            if 'createdDate' in data and data['createdDate']:
+                data['createdDate'] = data['createdDate'].isoformat()
+            return data

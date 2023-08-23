@@ -1,13 +1,24 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from local_settings import DB_PASSWORD
 
-# create an engine
-engine = create_engine(f"mysql://admin:{DB_PASSWORD}@database-1.cj8yik5n6htq.us-east-2.rds.amazonaws.com/test1", echo=True)
+from database_credentials import get_db_url
 
-# create a configured "Session" class
-Session = sessionmaker(bind=engine)
+database_credentials = get_db_url()
+mysql_engine = create_engine(database_credentials)
 
+
+Session = sessionmaker(bind=mysql_engine)
 session = Session()
+
+
 Base = declarative_base()
+
+from models.conversations import Conversation
+from models.personas import Persona
+from models.tags import Tag
+from models.topics import Topic
+from models.upvotes import Upvote
+from models.users import User
+
+Base.metadata.create_all(mysql_engine)
