@@ -2,32 +2,36 @@ import json
 import boto3
 from aws_lambda_powertools.utilities.validation import validate
 
+# from schemas.conversation import conversation as conversation_schema
+
 from models.conversations import Conversation
 from models.topics import Topic
 from models.users import User
+
 from globals import tracer
 from globals import app
+
 from session import session
 from s3_key import generate_s3_key
 from s3_key import s3_bucket
-# from schemas.conversation import conversation as conversation_schema
+
 
 s3_client = boto3.client('s3')
 
 @tracer.capture_method
 def store_conversation(body):
+
+        
     user_id = body.get('userID')
     topic_id = body.get('topicID')
     conversation_text = body.get('text')
     createdDate = body.get('createdDate')
 
 
-    # Get User and Topic objects from the database
     with session:
         user = session.query(User).filter_by(id=user_id).first()
         topic = session.query(Topic).filter_by(id=topic_id).first()
 
-        # If user or topic doesn't exist, return an error message (optional)
         if user is None and topic is None:
             return {"statusCode": 400, "body": f"User with ID {user_id} not found. Topic with ID {topic_id} not found."}
         elif user is None:
@@ -42,7 +46,7 @@ def store_conversation(body):
     
     
     with session:
-        # Create a new Conversation object
+        
         conversation = Conversation(
                             s3_bucket=s3_bucket,
                             s3_key=s3_key,
@@ -56,10 +60,14 @@ def store_conversation(body):
         session.add(conversation)
         session.commit()
 
+    return {"statusCode": 200, "body": "Data stored in S3 successfully!"}
+    
+    
 # @validate(inbound_schema=conversation_schema)
 @app.post("/store_conversation")
-def handler(event, context):
-    body = json.loads(event.get('body', '{}'))
+@tracer.capture_method
+def handler():
+    body: dict = app.current_event.json_body
     response = store_conversation(body)
     
     if 'statusCode' in response and response['statusCode'] != 200:
